@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: http://blog.xxs.hk.firadio.net
+url: https://xiangxisheng.github.io
 date_format: "ordinal"
 title: 项希盛个人网
 subtitle: "公众号：飞儿云平台"
