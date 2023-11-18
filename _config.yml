@@ -2,9 +2,9 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: https://xiangxisheng.github.io
+url:
 date_format: "ordinal"
-title: 项希盛个人网
+title: 项希盛
 subtitle: "公众号：飞儿云平台"
 description: "项希盛的个人博客，公众号：飞儿云平台"
 keywords: 项希盛, Xiang Xisheng, xiangxisheng, feieryun, 飞儿云平台
