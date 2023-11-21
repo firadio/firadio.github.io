@@ -146,7 +146,7 @@ openssl req -new -key db.key -out db.csr -config db.cfg
 openssl x509 -req -in db.csr -CA cadb.pem -CAkey cadb.key -CAcreateserial  -out db.crt -days 365 -sha256
 ```
 
-## 二、启动Docker
+## 二、启动Docker并检查运行状态
 
 ### 2.1：启动项目到后台
 ```
@@ -162,4 +162,9 @@ docker ps -a
 ### 2.3：查看是否有报错
 ```
 docker attach --sig-proxy=false scylla
+```
+
+### 2.4：查看节点运行状态
+```
+docker exec -it scylla nodetool status
 ```
