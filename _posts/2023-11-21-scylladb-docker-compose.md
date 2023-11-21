@@ -44,7 +44,6 @@ services:
       - -c
       - |
         cp /scylla/etc/scylla.yaml /etc/scylla/scylla.yaml
-        cp /scylla/etc/cqlshrc /root/.cassandra/cqlshrc
         exec /docker-entrypoint.py \
         --broadcast-address=47.90.101.1 \
         --broadcast-rpc-address=47.90.101.1
@@ -153,10 +152,11 @@ openssl x509 -req -in db.csr -CA cadb.pem -CAkey cadb.key -CAcreateserial  -out 
 ```
 
 ### 1.5：加密登录配置文件
-首先将下面的代码保存到项目根目录中的/scylla/etc/cqlshrc
+首先编辑根目录中的/scylla/etc/cqlshrc
 ```
 nano /root/docker/user/scylla/scylla/etc/cqlshrc
 ```
+然后贴入下面代码进行保存
 ```
 [ssl]
 userkey = /scylla/etc/cert/db.key
@@ -187,6 +187,9 @@ docker exec -it scylla nodetool status
 ```
 
 ### 2.5：测试加密登录
+```
+docker exec -it scylla cp /scylla/etc/cqlshrc /root/.cassandra/cqlshrc
+```
 ```
 docker exec -it scylla cqlsh scylla 9142 --ssl -u cassandra -p cassandra
 ```
