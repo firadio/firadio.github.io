@@ -13,11 +13,12 @@ categories: Database
 ### 1.1：创建项目目录
 ```
 mkdir /root/docker/user/scylla/
-mkdir /root/docker/user/scylla/etc/
-mkdir /root/docker/user/scylla/etc/cert/
+mkdir /root/docker/user/scylla/scylla
+mkdir /root/docker/user/scylla/scylla/etc/
+mkdir /root/docker/user/scylla/scylla/etc/cert/
 ```
 其中/root/docker/user/scylla/是项目的根目录，
-其中/root/docker/user/scylla/etc/用于保存配置文件和证书文件
+其中./scylla/etc/用于保存配置文件和证书文件
 
 
 ### 1.2：创建Docker-Compose.yml
@@ -35,13 +36,15 @@ services:
       - '7001:7001'
     volumes:
       - ./scylla:/scylla
-      - ./scylla/etc/.cassandra:/root/.cassandra
       - ./scylla/data:/var/lib/scylla/data
+    environment:
+      - SSL_CERTFILE=/scylla/etc/cert/db.crt
     entrypoint:
       - bash
       - -c
       - |
         cp /scylla/etc/scylla.yaml /etc/scylla/scylla.yaml
+        cp /scylla/etc/cqlshrc /root/.cassandra/cqlshrc
         exec /docker-entrypoint.py \
         --broadcast-address=47.90.101.1 \
         --broadcast-rpc-address=47.90.101.1
@@ -102,15 +105,18 @@ consistent_cluster_management: true
 api_ui_dir: /opt/scylladb/swagger-ui/dist/
 api_doc_dir: /opt/scylladb/api/api-doc/
 ```
-将此配置文件保存到项目根目录中的/etc/scylla.yaml
+将此配置文件保存到项目根目录中的/scylla/etc/scylla.yaml
 
 
 ### 1.4：创建证书文件
-根据官方提供的方法在/root/docker/user/scylla/etc/cert/目录中创建证书
-https://opensource.docs.scylladb.com/stable/operating-scylla/security/generate-certificate.html
+根据官方提供的方法https://opensource.docs.scylladb.com/stable/operating-scylla/security/generate-certificate.html
+在/root/docker/user/scylla/scylla/etc/cert/目录中创建证书
+```
+cd /root/docker/user/scylla/scylla/etc/cert/
+```
 
 #### 1.4.1：创建证书配置文件
-首先将下面的代码保存到项目根目录中的/etc/cert/db.cfg
+首先将下面的代码保存到项目根目录中的/scylla/etc/cert/db.cfg
 ```
 [ req ]
 default_bits = 4096
@@ -138,12 +144,23 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 #### 1.4.2：生成各种证书文件
 ```
-cd /root/docker/user/scylla/etc/cert/
+cd /root/docker/user/scylla/scylla/etc/cert/
 openssl genrsa -out cadb.key 4096
 openssl req -x509 -new -nodes -key cadb.key -days 3650 -config db.cfg -out cadb.pem
 openssl genrsa -out db.key 4096
 openssl req -new -key db.key -out db.csr -config db.cfg
 openssl x509 -req -in db.csr -CA cadb.pem -CAkey cadb.key -CAcreateserial  -out db.crt -days 365 -sha256
+```
+
+### 1.5：加密登录配置文件
+首先将下面的代码保存到项目根目录中的/scylla/etc/cqlshrc
+```
+nano /root/docker/user/scylla/scylla/etc/cqlshrc
+```
+```
+[ssl]
+userkey = /scylla/etc/cert/db.key
+usercert = /scylla/etc/cert/db.crt
 ```
 
 ## 二、启动Docker并检查运行状态
@@ -167,4 +184,16 @@ docker attach --sig-proxy=false scylla
 ### 2.4：查看节点运行状态
 ```
 docker exec -it scylla nodetool status
+```
+
+### 2.5：测试加密登录
+```
+docker exec -it scylla cqlsh scylla 9142 --ssl -u cassandra -p cassandra
+```
+出现下面提示代表登录成功
+```
+Connected to  at scylla:9142.
+[cqlsh 5.0.1 | Cassandra 3.0.8 | CQL spec 3.3.1 | Native protocol v4]
+Use HELP for help.
+cassandra@cqlsh>
 ```
