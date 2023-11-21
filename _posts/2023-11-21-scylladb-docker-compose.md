@@ -22,6 +22,11 @@ mkdir /root/docker/user/scylla/scylla/etc/cert/
 
 
 ### 1.2：创建Docker-Compose.yml
+#### 1.2.1：首先打开要编辑的文件
+```
+nano /root/docker/user/scylla/docker-compose.yml
+```
+#### 1.2.2：然后将下面代码贴入保存
 ```
 version: '3.8'
 services:
@@ -48,11 +53,10 @@ services:
         --broadcast-address=47.90.101.1 \
         --broadcast-rpc-address=47.90.101.1
 ```
-将上面代码保存到项目的根目录/root/docker/user/scylla/docker-compose.yml，
 将文件中的49.90.101.1换成您服务器的公网IP地址，
 如果这是第二台服务器需要在exec /docker-entrypoint.py \代码下面添加
 ```
-        --seeds=47.90.101.1 \
+--seeds=47.90.101.1 \
 ```
 
 ### 1.3：创建配置文件
@@ -152,11 +156,11 @@ openssl x509 -req -in db.csr -CA cadb.pem -CAkey cadb.key -CAcreateserial  -out 
 ```
 
 ### 1.5：加密登录配置文件
-首先编辑根目录中的/scylla/etc/cqlshrc
+#### 1.5.1：首先编辑根目录中的/scylla/etc/cqlshrc
 ```
 nano /root/docker/user/scylla/scylla/etc/cqlshrc
 ```
-然后贴入下面代码进行保存
+#### 1.5.2：然后贴入下面代码进行保存
 ```
 [ssl]
 userkey = /scylla/etc/cert/db.key
