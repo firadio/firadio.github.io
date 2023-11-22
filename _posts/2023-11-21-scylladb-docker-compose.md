@@ -258,13 +258,29 @@ SELECT * FROM system_schema.keyspaces;
 ```
 
 #### 2.3.2：表管理
-
+支持的数据类型可参考官方文档
+https://cassandra.apache.org/doc/stable/cassandra/cql/types.html
 ##### 2.3.2.1：建表
 ```
-CREATE TABLE IF NOT EXISTS test.test (ssid UUID, name text, DOB text, telephone text, email text, memberid text, PRIMARY KEY (ssid,  name, memberid));
+CREATE TABLE IF NOT EXISTS test.test (name text, uuid uuid, PRIMARY KEY (name));
 ```
 ##### 2.3.2.2：删表
 DROP TABLE test.test;
+
+##### 2.3.2.3：改表
+加字段
+```
+ALTER TABLE test ADD(f1 int,f2 float); 
+```
+删字段
+```
+ALTER TABLE test DROP(f1,f2);
+```
+
+##### 2.3.2.4：查表
+```
+SELECT * FROM system_schema.columns WHERE keyspace_name='test';
+```
 
 #### 2.3.3：用户管理
 可以参考官方文档
