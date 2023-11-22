@@ -271,24 +271,25 @@ SELECT * FROM system_schema.keyspaces;
 可以参考官方文档
 https://opensource.docs.scylladb.com/stable/operating-scylla/security/authorization.html
 ##### 2.3.2.1：增加用户
+https://docs.datastax.com/en/cql-oss/3.x/cql/cql_reference/cqlCreateRole.html
 ```
-CREATE USER test WITH PASSWORD 'test';
+CREATE ROLE test WITH PASSWORD = 'test' AND LOGIN = true;
 ```
 
 ##### 2.3.2.2：删除用户
 ```
-DROP USER test;
+DROP ROLE test;
 ```
 
 ##### 2.3.2.3：修改用户
 修改用户的密码
 ```
-ALTER USER test WITH PASSWORD 'test';
+ALTER ROLE test WITH PASSWORD 'test';
 ```
 
 ##### 2.3.2.4：查询用户
 ```
-LIST USERS;
+LIST ROLES;
 LIST ROLES of test;
 ```
 
