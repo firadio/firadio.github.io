@@ -239,22 +239,32 @@ ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy
 ### 2.3：创建键空间并授权
 
 #### 2.3.1：键空间管理
-##### 2.3.1.1 创建test键空间
+##### 2.3.1.1 创建键空间
 ```
 CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'replication_factor' : 1 };
 ```
-也可以指定每个数据中心的副本数量
+
+##### 2.3.1.2：删除键空间
 ```
-CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 1, 'dc2': 1};
+DROP KEYSPACE test;
+```
+
+##### 2.3.1.3：修改键空间
+ALTER KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'replication_factor': 1};
+
+##### 2.3.1.4：查看键空间
+```
+SELECT * FROM system_schema.keyspaces;
 ```
 
 #### 2.3.2：表管理
+
 ##### 2.3.2.1：建表
 ```
 CREATE TABLE IF NOT EXISTS test.test (ssid UUID, name text, DOB text, telephone text, email text, memberid text, PRIMARY KEY (ssid,  name, memberid));
 ```
 ##### 2.3.2.2：删表
-
+DROP TABLE test.test;
 
 #### 2.3.3：用户管理
 可以参考官方文档
