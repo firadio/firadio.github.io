@@ -121,8 +121,8 @@ api_doc_dir: /opt/scylladb/api/api-doc/
 # The rack and data center names may also include white spaces.
 # All trailing and leading white spaces will be trimmed.
 #  
-# dc=my_data_center
-# rack=my_rack
+dc=dc1
+rack=rack1
 # prefer_local=<false | true>
 # dc_suffix=<Data Center name suffix, used by EC2SnitchXXX snitches>
 #
@@ -222,4 +222,14 @@ Connected to  at scylla:9142.
 [cqlsh 5.0.1 | Cassandra 3.0.8 | CQL spec 3.3.1 | Native protocol v4]
 Use HELP for help.
 cassandra@cqlsh>
+```
+
+### 2.6：给用于系统认证的键空间设置复制策略
+```
+ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 3, 'dc2': 3};
+```
+
+### 2.7：创建一个键空间
+```
+CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 3, 'dc2': 3};
 ```
