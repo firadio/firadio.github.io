@@ -238,7 +238,7 @@ ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy
 
 ### 2.3：创建键空间并授权
 
-#### 2.3.1：空间管理
+#### 2.3.1：键空间管理
 ##### 2.3.1.1 创建test键空间
 ```
 CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'replication_factor' : 1 };
@@ -247,38 +247,66 @@ CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'NetworkTopolo
 ```
 CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 1, 'dc2': 1};
 ```
-建表
+
+#### 2.3.2：表管理
+##### 2.3.2.1：建表
 ```
 CREATE TABLE IF NOT EXISTS test.test (ssid UUID, name text, DOB text, telephone text, email text, memberid text, PRIMARY KEY (ssid,  name, memberid));
 ```
+##### 2.3.2.2：删表
 
-#### 2.3.2：用户管理
-##### 2.3.2.1：增加用户
+
+#### 2.3.3：用户管理
+可以参考官方文档
+https://opensource.docs.scylladb.com/stable/operating-scylla/security/authorization.html
+##### 2.3.3.1：增加用户
 ```
 CREATE USER test WITH PASSWORD 'test';
 ```
 
-##### 2.3.2.2：删除用户
+##### 2.3.3.2：删除用户
 ```
 DROP USER test;
 ```
 
-##### 2.3.2.3：修改用户
+##### 2.3.3.3：修改用户
 修改用户的密码
 ```
 ALTER USER test WITH PASSWORD 'test';
 ```
 
-##### 2.3.2.4：查询用户
+##### 2.3.3.4：查询用户
 ```
 LIST USERS;
+LIST ROLES of test;
 ```
 
 
-#### 2.3.3：权限管理
+#### 2.3.4：权限管理
 需要用到Role Based Access Control (RBAC)
 https://opensource.docs.scylladb.com/stable/operating-scylla/security/rbac-usecase.html
+##### 2.3.4.1：给用户授权
 ```
-GRANT test TO test;
+grant_permission_statement: GRANT `permissions` ON `resource` TO `user_name`
+permissions: ALL [ PERMISSIONS ] | `permission` [ PERMISSION ]
+permission: CREATE | ALTER | DROP | SELECT | MODIFY | AUTHORIZE | DESCRIBE
+resource: ALL KEYSPACES
+        :| KEYSPACE `keyspace_name`
+        :| [ TABLE ] `table_name`
+        :| ALL USERS
+        :| USER `user_name`
+```
+例子1：给test用户授予对test键空间的读取权限
+```
+GRANT SELECT ON KEYSPACE test TO test;
+```
+例子2：给test用户授予对test键空间的修改权限
+```
+GRANT MODIFY ON KEYSPACE test TO test;
+```
+
+
+查询权限列表
+```
 LIST ALL PERMISSIONS OF test;
 ```
