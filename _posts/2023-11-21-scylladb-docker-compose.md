@@ -188,28 +188,29 @@ usercert = /scylla/etc/cert/db.crt
 
 ## 二、启动Docker并检查运行状态
 
-### 2.1：启动项目到后台
+### 2.1：启动ScyllaDB并登录
+#### 2.1.1：启动项目到后台
 ```
 docker compose up -d
 ```
 
-### 2.2：查看运行状态
+#### 2.1.2：查看运行状态
 ```
 docker ps -a
 ```
 可以看到我们已经不开放7000端口了，转而使用SSL的7001端口
 
-### 2.3：查看是否有报错
+#### 2.1.3：查看是否有报错
 ```
 docker attach --sig-proxy=false scylla
 ```
 
-### 2.4：查看节点运行状态
+#### 2.1.4：查看节点运行状态
 ```
 docker exec -it scylla nodetool status
 ```
 
-### 2.5：测试加密登录
+#### 2.1.5：测试加密登录
 ```
 docker exec -it scylla cp /scylla/etc/cqlshrc /root/.cassandra/cqlshrc
 ```
@@ -224,14 +225,21 @@ Use HELP for help.
 cassandra@cqlsh>
 ```
 
-### 2.6：给用于系统认证的键空间设置复制策略
+### 2.2：基础设置
+#### 2.2.1：给用于系统认证的键空间设置复制策略
 ```
 ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'replication_factor': 1};
 ```
 注意replication_factor的数量不能超过数据中心的node数量
 
-### 2.7：创建键空间并授权
-#### 2.7.1：创建test键空间
+#### 2.2.2：管理超级用户
+##### 2.2.2.1：创建新的超级用户
+##### 2.2.2.2：删除默认超级用户
+
+### 2.3：创建键空间并授权
+
+#### 2.3.1：空间管理
+##### 2.3.1.1 创建test键空间
 ```
 CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'replication_factor' : 1 };
 ```
@@ -244,13 +252,30 @@ CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc
 CREATE TABLE IF NOT EXISTS test.test (ssid UUID, name text, DOB text, telephone text, email text, memberid text, PRIMARY KEY (ssid,  name, memberid));
 ```
 
-#### 2.7.2：创建test角色
+#### 2.3.2：用户管理
+##### 2.3.2.1：增加用户
 ```
-CREATE ROLE test WITH PASSWORD = 'test' AND LOGIN = true;
-LIST ROLES OF test;
+CREATE USER test WITH PASSWORD 'test';
 ```
 
-#### 2.7.3：给test角色授权
+##### 2.3.2.2：删除用户
+```
+DROP USER test;
+```
+
+##### 2.3.2.3：修改用户
+修改用户的密码
+```
+ALTER USER test WITH PASSWORD 'test';
+```
+
+##### 2.3.2.4：查询用户
+```
+LIST USERS;
+```
+
+
+#### 2.3.3：权限管理
 需要用到Role Based Access Control (RBAC)
 https://opensource.docs.scylladb.com/stable/operating-scylla/security/rbac-usecase.html
 ```
