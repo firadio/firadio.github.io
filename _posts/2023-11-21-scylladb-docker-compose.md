@@ -300,13 +300,17 @@ resource: ALL KEYSPACES
 ```
 GRANT SELECT ON KEYSPACE test TO test;
 ```
-例子2：给test用户授予对test键空间的修改权限
+例子2：给test用户授予对test键空间的全部操作权限（ALTER|AUTHORIZE|CREATE|DROP|MODIFY|SELECT）
 ```
-GRANT MODIFY ON KEYSPACE test TO test;
+GRANT ALL ON KEYSPACE test TO test;
+```
+##### 2.3.4.2：撤销用户权限
+撤销test对test键空间的全部权限
+```
+REVOKE ALL ON KEYSPACE test FROM test;
 ```
 
-
-查询权限列表
+##### 2.3.4.3：查询权限列表
 ```
 LIST ALL PERMISSIONS OF test;
 ```
