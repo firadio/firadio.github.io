@@ -80,7 +80,7 @@ native_transport_port_ssl: 9142
 read_request_timeout_in_ms: 5000
 write_request_timeout_in_ms: 2000
 cas_contention_timeout_in_ms: 1000
-endpoint_snitch: SimpleSnitch
+endpoint_snitch: GossipingPropertyFileSnitch
 rpc_address: localhost
 rpc_port: 9160
 api_port: 10000
