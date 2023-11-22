@@ -226,10 +226,34 @@ cassandra@cqlsh>
 
 ### 2.6：给用于系统认证的键空间设置复制策略
 ```
-ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 3, 'dc2': 3};
+ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'replication_factor': 1};
+```
+注意replication_factor的数量不能超过数据中心的node数量
+
+### 2.7：创建键空间并授权
+#### 2.7.1：创建test键空间
+```
+CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'NetworkTopologyStrategy', 'replication_factor' : 1 };
+```
+也可以指定每个数据中心的副本数量
+```
+CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 1, 'dc2': 1};
+```
+建表
+```
+CREATE TABLE IF NOT EXISTS test.test (ssid UUID, name text, DOB text, telephone text, email text, memberid text, PRIMARY KEY (ssid,  name, memberid));
 ```
 
-### 2.7：创建一个键空间
+#### 2.7.2：创建test角色
 ```
-CREATE KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'dc1' : 3, 'dc2': 3};
+CREATE ROLE test WITH PASSWORD = 'test' AND LOGIN = true;
+LIST ROLES OF test;
+```
+
+#### 2.7.3：给test角色授权
+需要用到Role Based Access Control (RBAC)
+https://opensource.docs.scylladb.com/stable/operating-scylla/security/rbac-usecase.html
+```
+GRANT test TO test;
+LIST ALL PERMISSIONS OF test;
 ```
