@@ -234,9 +234,19 @@ ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy
 
 #### 2.2.2：管理超级用户
 ##### 2.2.2.1：创建新的超级用户
-##### 2.2.2.2：删除默认超级用户
+```
+CREATE ROLE root WITH PASSWORD = '你的密码' AND SUPERUSER = true AND LOGIN = true;
+```
+##### 2.2.2.2：登录新的超级用户
+```
+docker exec -it scylla cqlsh -u root
+```
+##### 2.2.2.3：删除默认超级用户
+```
+DROP ROLE IF EXISTS 'cassandra';
+```
 
-### 2.3：创建键空间并授权
+### 2.3：键空间管理和用户权限
 
 #### 2.3.1：键空间管理
 ##### 2.3.1.1 创建键空间
@@ -257,61 +267,36 @@ ALTER KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'rep
 SELECT * FROM system_schema.keyspaces;
 ```
 
-#### 2.3.2：表管理
-支持的数据类型可参考官方文档
-https://cassandra.apache.org/doc/stable/cassandra/cql/types.html
-##### 2.3.2.1：建表
-```
-CREATE TABLE IF NOT EXISTS test.test (name text, uuid uuid, PRIMARY KEY (name));
-```
-##### 2.3.2.2：删表
-DROP TABLE test.test;
-
-##### 2.3.2.3：改表
-加字段
-```
-ALTER TABLE test ADD(f1 int,f2 float); 
-```
-删字段
-```
-ALTER TABLE test DROP(f1,f2);
-```
-
-##### 2.3.2.4：查表
-```
-SELECT * FROM system_schema.columns WHERE keyspace_name='test';
-```
-
-#### 2.3.3：用户管理
+#### 2.3.2：用户管理
 可以参考官方文档
 https://opensource.docs.scylladb.com/stable/operating-scylla/security/authorization.html
-##### 2.3.3.1：增加用户
+##### 2.3.2.1：增加用户
 ```
 CREATE USER test WITH PASSWORD 'test';
 ```
 
-##### 2.3.3.2：删除用户
+##### 2.3.2.2：删除用户
 ```
 DROP USER test;
 ```
 
-##### 2.3.3.3：修改用户
+##### 2.3.2.3：修改用户
 修改用户的密码
 ```
 ALTER USER test WITH PASSWORD 'test';
 ```
 
-##### 2.3.3.4：查询用户
+##### 2.3.2.4：查询用户
 ```
 LIST USERS;
 LIST ROLES of test;
 ```
 
 
-#### 2.3.4：权限管理
+#### 2.3.3：权限管理
 需要用到Role Based Access Control (RBAC)
 https://opensource.docs.scylladb.com/stable/operating-scylla/security/rbac-usecase.html
-##### 2.3.4.1：给用户授权
+##### 2.3.3.1：给用户授权
 ```
 grant_permission_statement: GRANT `permissions` ON `resource` TO `user_name`
 permissions: ALL [ PERMISSIONS ] | `permission` [ PERMISSION ]
@@ -330,13 +315,64 @@ GRANT SELECT ON KEYSPACE test TO test;
 ```
 GRANT ALL ON KEYSPACE test TO test;
 ```
-##### 2.3.4.2：撤销用户权限
+##### 2.3.3.2：撤销用户权限
 撤销test对test键空间的全部权限
 ```
 REVOKE ALL ON KEYSPACE test FROM test;
 ```
 
-##### 2.3.4.3：查询权限列表
+##### 2.3.3.3：查询权限列表
 ```
 LIST ALL PERMISSIONS OF test;
 ```
+
+### 2.4 表管理
+
+#### 2.4.1：表管理
+支持的数据类型可参考官方文档
+https://cassandra.apache.org/doc/stable/cassandra/cql/types.html
+##### 2.4.1.1：建表
+```
+CREATE TABLE IF NOT EXISTS test.test (name text, uuid uuid, PRIMARY KEY (name));
+```
+##### 2.4.1.2：删表
+DROP TABLE test.test;
+
+##### 2.4.1.3：改表
+加字段
+```
+ALTER TABLE test ADD(f1 int,f2 float); 
+```
+删字段
+```
+ALTER TABLE test DROP(f1,f2);
+```
+
+##### 2.4.1.4：查表
+```
+SELECT * FROM system_schema.columns WHERE keyspace_name='test';
+```
+
+#### 2.4.2：表索引
+#### 2.4.2.1：创建索引
+#### 2.4.2.2：删除索引
+
+### 2.5 数据管理
+#### 2.5.1 简单的增删改查
+##### 2.5.1.1 插入记录
+```
+INSERT INTO test.test(name, uuid)VALUES('test', uuid())IF NOT EXISTS;
+```
+##### 2.5.1.2 删除记录
+```
+DELETE FROM test.test where name='test';
+```
+##### 2.5.1.3 修改记录
+```
+UPDATE test.test SET name='test1' WHERE name='test';
+```
+##### 2.5.1.4 查询记录
+```
+SELECT * FROM test.test where name='test1';
+```
+
