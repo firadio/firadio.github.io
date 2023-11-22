@@ -49,6 +49,7 @@ services:
       - -c
       - |
         cp /scylla/etc/scylla.yaml /etc/scylla/scylla.yaml
+        cp /scylla/etc/cassandra-rackdc.properties /etc/scylla/cassandra-rackdc.properties
         exec /docker-entrypoint.py \
         --broadcast-address=47.90.101.1 \
         --broadcast-rpc-address=47.90.101.1
@@ -60,6 +61,8 @@ services:
 ```
 
 ### 1.3：创建配置文件
+#### 1.3.1：scylla.yaml
+将下面代码保存到项目根目录中的/scylla/etc/scylla.yaml
 ```
 num_tokens: 256
 commitlog_sync: periodic
@@ -108,7 +111,23 @@ consistent_cluster_management: true
 api_ui_dir: /opt/scylladb/swagger-ui/dist/
 api_doc_dir: /opt/scylladb/api/api-doc/
 ```
-将此配置文件保存到项目根目录中的/scylla/etc/scylla.yaml
+#### 1.3.2：cassandra-rackdc.properties
+将下面代码保存到项目根目录中的/scylla/etc/cassandra-rackdc.properties
+```
+#
+# cassandra-rackdc.properties
+#
+# The lines may include white spaces at the beginning and the end.
+# The rack and data center names may also include white spaces.
+# All trailing and leading white spaces will be trimmed.
+#  
+# dc=my_data_center
+# rack=my_rack
+# prefer_local=<false | true>
+# dc_suffix=<Data Center name suffix, used by EC2SnitchXXX snitches>
+#
+```
+其中dc和rack需要取消注解并填写相应资料
 
 
 ### 1.4：创建证书文件
