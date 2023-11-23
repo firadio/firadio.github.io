@@ -228,7 +228,7 @@ cassandra@cqlsh>
 ### 2.2：基础设置
 #### 2.2.1：给用于系统认证的键空间设置复制策略
 ```
-ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'replication_factor': 1};
+ALTER KEYSPACE system_auth WITH REPLICATION = {'class': 'EverywhereStrategy'};
 ```
 注意replication_factor的数量不能超过数据中心的node数量
 
