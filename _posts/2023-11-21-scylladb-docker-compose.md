@@ -41,7 +41,7 @@ services:
       - '7001:7001'
     volumes:
       - ./scylla:/scylla
-      - ./scylla/data:/var/lib/scylla/data
+      - ./scylla:/var/lib/scylla
     environment:
       - SSL_CERTFILE=/scylla/etc/cert/db.crt
     entrypoint:
@@ -260,7 +260,9 @@ DROP KEYSPACE test;
 ```
 
 ##### 2.3.1.3：修改键空间
+```
 ALTER KEYSPACE test WITH REPLICATION = {'class': 'NetworkTopologyStrategy', 'replication_factor': 1};
+```
 
 ##### 2.3.1.4：查看键空间
 ```
