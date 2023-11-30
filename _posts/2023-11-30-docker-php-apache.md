@@ -107,3 +107,20 @@ service apache2 reload
 cp 000-default.conf /etc/apache2/sites-enabled
 service apache2 reload
 ```
+
+4：使用.htaccess
+4.1：php错误日志
+```
+php_flag  log_errors on
+php_value error_log /root/www/php_error.log
+```
+确保chown www-data. /root/www
+
+4.2：伪静态
+```
+Options +FollowSymlinks
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+```
