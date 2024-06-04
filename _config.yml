@@ -4,7 +4,7 @@
 baseurl:
 url:
 date_format: "ordinal"
-title: 项希盛
+title: XiXi技术网
 subtitle: "公众号：飞儿云平台"
 description: "项希盛的个人博客，公众号：飞儿云平台"
 keywords: 项希盛, Xiang Xisheng, xiangxisheng, feieryun, 飞儿云平台
@@ -180,7 +180,7 @@ lazy_load_disqus : false
 # ---------------- #
 simple_jekyll_search:
     # 是否支持全文搜索
-    fulltext: false
+    fulltext: true
     # 最多显示多少条搜索结果
     limit: 10
 
